@@ -32,9 +32,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
             .formLogin()
             .loginProcessingUrl("/authlogin")
-            .usernameParameter("userid")
-            .passwordParameter("passwd")
+            .usernameParameter("memberId")
+            .passwordParameter("password")
             .permitAll();
+        httpSecurity.logout()
+            .logoutUrl("/logout")
+            .permitAll();
+
     }
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
