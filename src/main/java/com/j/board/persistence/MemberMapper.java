@@ -9,9 +9,9 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface MemberMapper {
-  @Select("select * from member where userid = #{userid}")
-  public MemberVO findByUserid(@Param("userid") String userid);
+  @Select("select * from member where memberid = #{memberId}")
+  public MemberVO findByUserid(@Param("memberId") String memberId);
 
-  @Insert("insert into member (memberid, passwd, nickname) values(#{memberId}, #{password}, #{nickname})")
+  @Insert("insert into member (userid, passwd, nickname) values(#{memberId}, #{password}, #{nickname})")
   public boolean signUpMember(MemberVO vo);
 }

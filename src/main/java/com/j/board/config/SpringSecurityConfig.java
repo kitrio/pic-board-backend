@@ -2,10 +2,14 @@ package com.j.board.config;
 
 import java.util.Arrays;
 
+import com.j.board.security.LoginFailureHandler;
 import com.j.board.security.LoginSuccessHandler;
+import com.j.board.security.MemberDetailsService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -39,11 +43,22 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .usernameParameter("memberId")
             .passwordParameter("password")
             .successHandler(loginSuccessHandler())
+            .failureHandler(loginFailureHandler())
             .permitAll();
         httpSecurity.logout()
             .logoutUrl("/logout")
             .permitAll();
 
+    }
+    @Autowired
+    MemberDetailsService memberDetailsService;
+    
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(memberDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
     }
     
     @Bean
@@ -54,6 +69,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
         return new LoginSuccessHandler();
+    }
+    @Bean
+    public LoginFailureHandler loginFailureHandler() {
+        return new LoginFailureHandler();
     }
     
     @Bean
