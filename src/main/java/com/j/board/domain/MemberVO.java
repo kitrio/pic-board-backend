@@ -7,9 +7,19 @@ public class MemberVO {
   private String password;
   private String nickname;
   private Timestamp regDate;
-  private String authInfo;
-  private Timestamp lastLogin;
+	private Timestamp lastLogin;
+	private String authInfo;
 	  
+
+	public MemberVO(String memberId, String password, String nickname, Timestamp regDate, Timestamp lastLogin, String authInfo) {
+		this.memberId = memberId;
+		this.password = password;
+		this.nickname = nickname;
+		this.regDate = regDate;
+		this.lastLogin = lastLogin;
+		this.authInfo = authInfo;
+	}
+	
 	public String getMemberId() {
 		return memberId;
 	}

@@ -32,14 +32,14 @@ public class MemberServiceTest {
   @Before
   public void setUp() throws Exception {
     Timestamp today = new Timestamp(new Date().getTime());
-    memberVO = new MemberVO("test0","testpasswd","testname", today, "ROLE_USER",today);
+    memberVO = new MemberVO("test","testpasswd","testname", today, today,"ROLE_USER");
   }
 
   @Test
   public void signUpMemberTest() {
     when(memberMapper.signUpMember(memberVO)).thenReturn(true);
     boolean result = memberService.signUpMember(memberVO);
-
+    
     assertEquals(true, result);
   }
 }
