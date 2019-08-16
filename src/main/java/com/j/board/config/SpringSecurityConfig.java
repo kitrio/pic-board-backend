@@ -2,11 +2,15 @@ package com.j.board.config;
 
 import java.util.Arrays;
 
+import com.j.board.security.LoginSuccessHandler;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -34,12 +38,24 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .loginProcessingUrl("/authlogin")
             .usernameParameter("memberId")
             .passwordParameter("password")
+            .successHandler(loginSuccessHandler())
             .permitAll();
         httpSecurity.logout()
             .logoutUrl("/logout")
             .permitAll();
 
     }
+    
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public LoginSuccessHandler loginSuccessHandler() {
+        return new LoginSuccessHandler();
+    }
+    
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
 
