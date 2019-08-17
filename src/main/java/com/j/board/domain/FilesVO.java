@@ -4,7 +4,7 @@ public class FilesVO {
     private int boardNum;
     private String fileName;
     private String fileAltName;
-
+    private String filePath;
 
     public int getBoardNum() {
         return boardNum;
@@ -25,5 +25,12 @@ public class FilesVO {
     }
     public void setFileAltName(String fileAltName) {
         this.fileAltName = fileAltName;
+    }
+    
+    public String getFilePath() {
+        return filePath;
+    }
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }
