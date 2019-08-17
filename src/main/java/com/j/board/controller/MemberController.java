@@ -19,7 +19,7 @@ public class MemberController {
   MemberService memberService;
 
   @PostMapping("/signup")
-  public ResponseEntity<MemberController> signUpMember( MemberVO member){
+  public ResponseEntity<MemberController> signUpMember(@RequestBody MemberVO member){
     boolean isSuceess =  memberService.signUpMember(member);
       if(isSuceess){
         return new ResponseEntity<>(HttpStatus.OK);
