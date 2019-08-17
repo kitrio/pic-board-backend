@@ -34,13 +34,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers("/authlogin").permitAll()
+            .antMatchers("/member/signup").permitAll()
             .antMatchers("/auth/admin/**").hasRole("ADMIN")
             .antMatchers("/auth/**").hasAnyRole("ADMIN", "USER")
             .anyRequest().authenticated();
         httpSecurity
             .formLogin()
             .loginProcessingUrl("/authlogin")
-            .usernameParameter("memberId")
+            .usernameParameter("memberid")
             .passwordParameter("password")
             .successHandler(loginSuccessHandler())
             .failureHandler(loginFailureHandler())
@@ -79,7 +80,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080","http://localhost"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080","http://localhost","http://localhost:8081"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("*"));
