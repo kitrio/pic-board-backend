@@ -12,6 +12,6 @@ public interface MemberMapper {
   @Select("select * from member where memberid = #{memberId}")
   public MemberVO findByUserid(@Param("memberId") String memberId);
 
-  @Insert("insert into member (memberid, passwd, nickname) values(#{memberId}, #{password}, #{nickname})")
+  @Insert("insert into member (memberid, password, usernick) values(#{memberId}, #{password}, #{nickname})")
   public boolean signUpMember(MemberVO vo);
 }
