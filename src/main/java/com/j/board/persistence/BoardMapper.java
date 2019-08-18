@@ -8,7 +8,7 @@ import com.j.board.domain.BoardVO;
 
 @Mapper
 public interface BoardMapper {
-	@Insert("insert into board(boardNum, title, content, readCount, goodCount, ip) VALUES(#{boardNum}, #{writer}, #{title}, #{content}, #{readCount}, #{goodCount}, #{ip})")
+	@Insert("insert into board(boardNum, writer, title, content, readCount, goodCount, ip) VALUES(#{boardNum}, #{nickname}, #{title}, #{content}, #{readCount}, #{goodCount}, #{ip})")
     public void insertContent(BoardVO vo);
 
 }
