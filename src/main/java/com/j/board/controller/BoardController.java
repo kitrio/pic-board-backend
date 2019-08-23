@@ -22,14 +22,15 @@ import com.j.board.service.FileService;
     
     @Autowired
     FileService fileService;
-    @PostMapping("/write")
+
+    @PostMapping("content/write")
     public void writeContent(@RequestBody BoardVO contentVO,HttpServletRequest request) {
     String ip = getIpAddress(request);
         contentVO.setIp(ip);
         boardListService.writeService(contentVO);
     }
 
-    @PostMapping("/write/image")
+    @PostMapping("content/write/image")
     public String uploadImg(@RequestPart("img") MultipartFile imgfile) {
     return fileService.upLoadFile(imgfile);
     }

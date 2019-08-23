@@ -7,6 +7,7 @@ import com.j.board.security.LoginSuccessHandler;
 import com.j.board.security.MemberDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -37,6 +38,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/member/signup").permitAll()
             .antMatchers("/auth/admin/**").hasRole("ADMIN")
             .antMatchers("/auth/**").hasAnyRole("ADMIN", "USER")
+            .antMatchers("/list/content/write").hasAnyRole("ADMIN", "USER")
+            .antMatchers("/list/content/modify").hasAnyRole("ADMIN", "USER")
+            .antMatchers("/list/content/delete").hasAnyRole("ADMIN", "USER")
+            .antMatchers("/list/**").permitAll()
             .anyRequest().authenticated();
         httpSecurity
             .formLogin()
@@ -75,12 +80,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     public LoginFailureHandler loginFailureHandler() {
         return new LoginFailureHandler();
     }
-    
+    @Value("${list_allow_origin_url}")
+    private String allowOriginUrl;
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080","http://localhost","http://localhost:8081"));
+        configuration.setAllowedOrigins(Arrays.asList(allowOriginUrl));
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("*"));
