@@ -18,28 +18,30 @@ import com.j.board.service.FileService;
  @RequestMapping("list")
  public class BoardController {
  	@Autowired
-     BoardListService boardListService;
-     FileService fileService;
-     @PostMapping("/write")
-     public void writeContent(@RequestBody BoardVO contentVO,HttpServletRequest request) {
-     	String ip = getIpAddress(request);
-         contentVO.setIp(ip);
-         boardListService.writeService(contentVO);
-     }
-
-     @PostMapping("/write/image")
-     public String uploadImg(@RequestPart MultipartFile imgfile) {
-        return fileService.upLoadFile(imgfile);
-     }
+    BoardListService boardListService;
     
-     private String getIpAddress(HttpServletRequest request) {
-         String remoteAdr = "";
-         if(request != null){
-             remoteAdr = request.getHeader("X-FORWADED-FOR");
-             if (remoteAdr == null || "".equals(remoteAdr)) {
-                 remoteAdr = request.getRemoteAddr();
-             }
-         }
-         return remoteAdr;
-     }
- }
+    @Autowired
+    FileService fileService;
+    @PostMapping("/write")
+    public void writeContent(@RequestBody BoardVO contentVO,HttpServletRequest request) {
+    String ip = getIpAddress(request);
+        contentVO.setIp(ip);
+        boardListService.writeService(contentVO);
+    }
+
+    @PostMapping("/write/image")
+    public String uploadImg(@RequestPart("img") MultipartFile imgfile) {
+    return fileService.upLoadFile(imgfile);
+    }
+
+    private String getIpAddress(HttpServletRequest request) {
+        String remoteAdr = "";
+        if(request != null){
+            remoteAdr = request.getHeader("X-FORWADED-FOR");
+            if (remoteAdr == null || "".equals(remoteAdr)) {
+                remoteAdr = request.getRemoteAddr();
+            }
+        }
+        return remoteAdr;
+    }
+}
