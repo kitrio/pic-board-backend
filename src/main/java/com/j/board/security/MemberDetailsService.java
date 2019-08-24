@@ -19,9 +19,9 @@ public class MemberDetailsService implements UserDetailsService {
     MemberVO vo = null;
     try {
       vo = memberMapper.findByUserid(memberId);
-
     } catch (UsernameNotFoundException e) {
       //TODO error handler
+      return null;
     }
     return new CustomMember(vo);
   }
