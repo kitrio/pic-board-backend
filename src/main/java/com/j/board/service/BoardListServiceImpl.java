@@ -10,7 +10,12 @@ import com.j.board.persistence.BoardMapper;
 public class BoardListServiceImpl implements BoardListService{
 	@Autowired
 	BoardMapper boardMapper;
-	public void writeService(BoardVO contentVO) {
-		boardMapper.insertContent(contentVO);
+	
+	public boolean contentWriteService(BoardVO contentVO) {
+		return boardMapper.insertContent(contentVO);
+	}
+
+	public boolean contentModifyService(BoardVO contentVO) {
+		return boardMapper.updateContent(contentVO);
 	}
 }
