@@ -7,7 +7,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,13 +32,6 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         logger.info("successes");
         if (savedRequest == null) {
             clearAuthenticationAttributes(request);
-            return;
-        } String targetUrlParam = getTargetUrlParameter();
-        if (isAlwaysUseDefaultTargetUrl() || (targetUrlParam != null && StringUtils.hasText(request.getParameter(targetUrlParam))))
-        {
-            requestCache.removeRequest(request, response);
-            clearAuthenticationAttributes(request);
-            response.sendError(HttpServletResponse.SC_OK);
             return;
         }
     }
