@@ -4,13 +4,17 @@ import java.sql.Timestamp;
 
 public class MemberVO {
 	private String memberId;
-  private String password;
-  private String nickname;
-  private Timestamp regDate;
+	private String password;
+  	private String nickname;
+  	private Timestamp regDate;
 	private Timestamp lastLogin;
 	private String authInfo;
 	  
-
+	public MemberVO() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
 	public MemberVO(String memberId, String password, String nickname, Timestamp regDate, Timestamp lastLogin, String authInfo) {
 		this.memberId = memberId;
 		this.password = password;
