@@ -5,6 +5,7 @@ import java.util.Arrays;
 import com.j.board.security.LoginFailureHandler;
 import com.j.board.security.LoginSuccessHandler;
 import com.j.board.security.MemberDetailsService;
+import com.j.board.security.RestAuthenticationEntryPoint;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,16 +45,20 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/list/**").permitAll()
             .anyRequest().authenticated();
         httpSecurity
+        
             .formLogin()
             .loginProcessingUrl("/authlogin")
             .usernameParameter("memberid")
             .passwordParameter("password")
             .successHandler(loginSuccessHandler())
             .failureHandler(loginFailureHandler())
-            .permitAll();
-        httpSecurity.logout()
-            .logoutUrl("/logout")
-            .permitAll();
+            .permitAll().and()
+            .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint());
+        httpSecurity
+            .logout()
+            .logoutUrl("/member/logout")
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID");
 
     }
     @Autowired
@@ -76,9 +81,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     public LoginSuccessHandler loginSuccessHandler() {
         return new LoginSuccessHandler();
     }
+
     @Bean
     public LoginFailureHandler loginFailureHandler() {
         return new LoginFailureHandler();
+    }
+
+    @Bean
+    public RestAuthenticationEntryPoint restAuthenticationEntryPoint() {
+        return new RestAuthenticationEntryPoint();
     }
     @Value("${list_allow_origin_url}")
     private String allowOriginUrl;
