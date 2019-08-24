@@ -7,14 +7,13 @@ import org.apache.ibatis.annotations.Update;
 import com.j.board.domain.BoardVO;
 import com.j.board.domain.FilesVO;
 
-
 @Mapper
 public interface BoardMapper {
-	@Insert("insert into board(boardNum, writer, title, content, readCount, goodCount, ip) VALUES(#{boardNum}, #{nickname}, #{title}, #{content}, #{readCount}, #{goodCount}, #{ip})")
+    @Insert("insert into board(boardNum, writer, memberid, title, content, readCount, goodCount, ip, filealtname) VALUES(#{boardNum}, #{nickname}, #{memberid} #{title}, #{content}, #{readCount}, #{goodCount}, #{ip}, #{filealtname})")
     public boolean insertContent(BoardVO board);
 
-    @Insert("insert into files (boardnum, filename, filealtname, filepath) VALUSE(#{boardNum}, #{filename}, #{fileAltName}, #{filePath}")
-    public boolean insertFile(FilesVO files);
+    @Insert("insert into files (filename, filealtname, filepath) VALUES(#{fileName}, #{fileAltName}, #{filePath} )")
+    public int insertFile(FilesVO files);
     
     @Update("update files boardnum = #{boardNum}, where filealtname = #{fileAltName}")
 	public void setRealfileNum(int boardNum, String fileAltName);

@@ -1,7 +1,6 @@
 package com.j.board.domain;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 public class BoardVO {
     private int boardNum;
@@ -13,7 +12,7 @@ public class BoardVO {
     private int readCount;
     private int goodCount;
     private String ip;
-    private List<FilesVO> files;
+    private String fileAltName;
 
     public int getBoardNum() {
         return this.boardNum;
@@ -77,11 +76,13 @@ public class BoardVO {
 	public void setIp(String ip) {
 		this.ip = ip;
     }
+
+    public String getFileAltName() {
+        return fileAltName;
+    }
+    public void setFileAltName(String fileAltName) {
+        this.fileAltName = fileAltName;
+    }
     
-    public List<FilesVO> getFiles() {
-        return files;
-    }
-    public void setFiles(List<FilesVO> files) {
-        this.files = files;
-    }
+    
 }
