@@ -14,7 +14,7 @@ import com.j.board.domain.FilesVO;
 
 @Mapper
 public interface BoardMapper {
-    @Insert("insert into board(boardNum, writer, memberid, title, content, readCount, goodCount, ip, filealtname) VALUES(#{boardNum}, #{nickname}, #{memberid} #{title}, #{content}, #{readCount}, #{goodCount}, #{ip}, #{filealtname})")
+    @Insert("insert into board(boardNum, writer, memberid, title, content, readCount, goodCount, ip, filealtname) VALUES(#{boardNum}, #{nickname}, #{memberId}, #{title}, #{content}, #{readCount}, #{goodCount}, #{ip}, #{fileAltName})")
     public boolean insertContent(BoardVO board);
 
     @Insert("insert into files (filename, filealtname, filepath) VALUES(#{fileName}, #{fileAltName}, #{filePath} )")
