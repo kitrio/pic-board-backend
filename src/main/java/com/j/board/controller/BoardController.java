@@ -57,7 +57,7 @@ import com.j.board.service.FileService;
     public void writeContent(Principal principal, @RequestBody BoardVO contentVO, HttpServletRequest request) {
         String ip = getIpAddress(request);
         CustomMember user = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        contentVO.setMemberId(user.getMemberVO().getMemberId());
+        contentVO.setMemberId(user.getUsername());
         contentVO.setNickname(user.getMemberVO().getNickname());
         contentVO.setIp(ip);
         boardListService.contentWriteService(contentVO);
@@ -66,7 +66,10 @@ import com.j.board.service.FileService;
     @PostMapping("/content/write/image")
     public ResponseEntity<String> uploadImg(@RequestPart("img") final MultipartFile imgfile) {
 
-        final String filePath = fileService.upLoadFile(imgfile);
+        String filePath = fileService.upLoadFile(imgfile);
+        if(filePath.equals("invalidfile")){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(filePath, HttpStatus.OK);
     }
 

@@ -21,21 +21,34 @@ public class FileServiceImpl implements FileService{
 	
 	public String upLoadFile(MultipartFile file) {
 		String fileExtention = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-		String uuid = UUID.randomUUID().toString();
-		FilesVO filesVO = new FilesVO();
-		filesVO.setBoardNum(-1); // Temp file number
-        filesVO.setFileName(file.getOriginalFilename());
-        filesVO.setFileAltName(uuid + fileExtention);
-		filesVO.setFilePath(SAVE_PATH+ filesVO.getFileAltName());
+		if(isValidImage(fileExtention) == true){
+			String uuid = UUID.randomUUID().toString();
+			FilesVO filesVO = new FilesVO();
+			filesVO.setBoardNum(-1); // Temp file number
+			filesVO.setFileName(file.getOriginalFilename());
+			filesVO.setFileAltName(uuid + fileExtention);
+			filesVO.setFilePath(SAVE_PATH+ filesVO.getFileAltName());
 
-		File saveFile = new File(SAVE_PATH + filesVO.getFileAltName());
-		try {
-			file.transferTo(saveFile);
-			boardMapper.insertFile(filesVO);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			return "fail";
+			File saveFile = new File(SAVE_PATH + filesVO.getFileAltName());
+			try {
+				file.transferTo(saveFile);
+				boardMapper.insertFile(filesVO);
+			} catch (IOException e) {
+				return "fail";
+			}
+			return filesVO.getFileAltName();
+		} else {
+			return "invalidfile";
 		}
-		return filesVO.getFileAltName();
+	}
+
+	private static boolean isValidImage(String fileExtension) {
+		String imgExtension [] = {".png", ".jpeg", ".jpg", ".gif"};
+		for(int i=0;i<imgExtension.length;i++){
+			if(imgExtension[i].equals(fileExtension)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
