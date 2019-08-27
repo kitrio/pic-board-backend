@@ -1,5 +1,6 @@
 package com.j.board.persistence;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -31,9 +32,13 @@ public interface BoardMapper {
 
     @Update("update board content = #{content}, title= #{title}, filealtname= #{fileAltName}, where boardnum = #{boardNum} ")
     public boolean updateContent(BoardVO board);
-    
-    @Update("update files boardnum = #{boardNum}, where filealtname = #{fileAltName}")
+
+    @Update("update files set boardnum = #{boardNum}, where filealtname = #{fileAltName}")
     public void setRealfileNum(int boardNum, String fileAltName);
     
+    @Update("update board set goodCount = #{goodCount} where boardnum = #{boardNum} ")
+    public int updateGoodCount(int goodCount, int boardNum);
 
+    @Update("update board set readCount = #{readCount}")
+    public int updateReadCount(int readCount);
 }
