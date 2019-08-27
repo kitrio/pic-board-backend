@@ -14,13 +14,13 @@ import com.j.board.domain.FilesVO;
 
 @Mapper
 public interface BoardMapper {
-    @Insert("insert into board(boardNum, writer, memberid, title, content, readCount, goodCount, ip, filealtname) VALUES(#{boardNum}, #{nickname}, #{memberId}, #{title}, #{content}, #{readCount}, #{goodCount}, #{ip}, #{fileAltName})")
+    @Insert("insert into board(boardNum, nickname, memberid, title, content, readCount, goodCount, ip, filealtname) VALUES(#{boardNum}, #{nickname}, #{memberId}, #{title}, #{content}, #{readCount}, #{goodCount}, #{ip}, #{fileAltName})")
     public boolean insertContent(BoardVO board);
 
     @Insert("insert into files (filename, filealtname, filepath) VALUES(#{fileName}, #{fileAltName}, #{filePath} )")
     public int insertFile(FilesVO files);
 
-    @Select("select * from board where boardnum = #{boardNum}")
+    @Select("select boardnum, nickname, memberid, title, content, (DATE_FORMAT(writetime, '%Y/%m/%d %h:%i')) as writeTime, readCount, goodCount, filealtname from board where boardnum = #{boardNum}")
     public BoardVO selectOneContent(int boardNum);
 
     @Select("select * from board where boardnum = #{boardNum} limit #{firstPage}, #{lastPage}")

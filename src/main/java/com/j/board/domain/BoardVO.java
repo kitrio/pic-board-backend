@@ -1,14 +1,12 @@
 package com.j.board.domain;
 
-import java.sql.Timestamp;
-
 public class BoardVO {
     private int boardNum;
     private String memberId;
     private String nickname;
     private String title;
     private String content;
-    private Timestamp writeTime;
+    private String writeTime;
     private int readCount;
     private int goodCount;
     private String ip;
@@ -49,10 +47,10 @@ public class BoardVO {
     	this.content = content;
     }
 
-    public Timestamp getWriteTime() {
+    public String getWriteTime() {
     	return this.writeTime;
     }
-    public void setWriteTime(Timestamp contentTime) {
+    public void setWriteTime(String contentTime) {
     	this.writeTime = contentTime;
     }
 
