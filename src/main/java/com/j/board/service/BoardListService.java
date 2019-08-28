@@ -10,8 +10,10 @@ public interface BoardListService {
 	public boolean contentWriteService(BoardVO contentVO);
 	public boolean contentModifyService(BoardVO contentVO);
 	public BoardVO contentReadService(int boardNum);
+	public int contentCountUp(int boardNum);
 	public List<BoardVO> contentListReadService(int firstPage, int lastPage);
 	public List<BoardVO> contentBestReadService(LocalDate searchDate);
+	public boolean contentDelete(int boardNum);
 	public Timestamp getStartDay(LocalDate searchDate);
 	public Timestamp getLastDay(LocalDate searchDate);
 

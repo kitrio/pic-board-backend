@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.j.board.domain.BoardVO;
+import com.j.board.persistence.BoardMapper;
 import com.j.board.security.CustomMember;
 import com.j.board.service.BoardListService;
 import com.j.board.service.FileService;
@@ -81,6 +82,14 @@ import com.j.board.service.FileService;
            return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
         }
         return new ResponseEntity<>(content, HttpStatus.OK);
+    }
+    
+    @GetMapping("/content/delete/{num}")
+    public HttpStatus deleteContent(@PathVariable int num) {
+        if(boardListService.contentDelete(num)){
+            return HttpStatus.OK;
+        }
+        return HttpStatus.BAD_REQUEST;
     }
 
     private String getIpAddress(HttpServletRequest request) {

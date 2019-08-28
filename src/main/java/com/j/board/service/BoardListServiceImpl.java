@@ -26,7 +26,20 @@ public class BoardListServiceImpl implements BoardListService{
 	}
 
 	public BoardVO contentReadService(int boardNum) {
+		contentCountUp(boardNum);
 		return boardMapper.selectOneContent(boardNum);
+	}
+
+	public boolean contentDelete(int boardNum) {
+		if(boardMapper.deleteContent(boardNum) == 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public int contentCountUp(int boardNum) {
+		return boardMapper.updateReadCount(boardNum);
 	}
 
 	public List<BoardVO> contentBestReadService(LocalDate searchDate) {
