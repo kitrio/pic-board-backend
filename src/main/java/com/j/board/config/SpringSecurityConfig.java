@@ -37,12 +37,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers("/authlogin").permitAll()
             .antMatchers("/member/signup").permitAll()
+            .antMatchers("/member/info").hasAnyRole("ADMIN","USER")
             .antMatchers("/auth/admin/**").hasRole("ADMIN")
             .antMatchers("/auth/**").hasAnyRole("ADMIN", "USER")
             .antMatchers("/list/content/write").hasAnyRole("ADMIN", "USER")
             .antMatchers("/list/content/modify").hasAnyRole("ADMIN", "USER")
             .antMatchers("/list/content/delete").hasAnyRole("ADMIN", "USER")
             .antMatchers("/list/**").permitAll()
+            .antMatchers("/list/content/**").permitAll()
             .anyRequest().authenticated();
         httpSecurity
         
