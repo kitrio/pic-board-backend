@@ -18,7 +18,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'net.coobird:thumbnailator:0.4.8'
 	runtimeOnly 'mysql:mysql-connector-java'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	//implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 }
