@@ -21,7 +21,7 @@ public class BoardListServiceImpl implements BoardListService{
 		return boardMapper.insertContent(contentVO);
 	}
 
-	public boolean contentModifyService(BoardVO contentVO) {
+	public int contentModifyService(BoardVO contentVO) {
 		return boardMapper.updateContent(contentVO);
 	}
 

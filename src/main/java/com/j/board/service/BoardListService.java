@@ -8,7 +8,7 @@ import com.j.board.domain.BoardVO;
 
 public interface BoardListService {
 	public boolean contentWriteService(BoardVO contentVO);
-	public boolean contentModifyService(BoardVO contentVO);
+	public int contentModifyService(BoardVO contentVO);
 	public BoardVO contentReadService(int boardNum);
 	public int contentGoodCount(int boardNum);
 	public int contentCountUp(int boardNum);

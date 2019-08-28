@@ -30,16 +30,16 @@ public interface BoardMapper {
     @Select("select * from board where writetime between #{startDay} AND #{endDay} order by goodcount desc LIMIT 0, 19")
     public List<BoardVO> selectWeeklyBestList (@Param("startDay") Timestamp statDay, @Param("endDay") Timestamp endDay);
 
-    @Update("update board content = #{content}, title= #{title}, filealtname= #{fileAltName}, where boardnum = #{boardNum} ")
-    public boolean updateContent(BoardVO board);
+    @Update("update board set content = #{content}, title= #{title}, filealtname= #{fileAltName} where boardnum = #{boardNum} ")
+    public int updateContent(BoardVO board);
 
     @Update("update files set boardnum = #{boardNum}, where filealtname = #{fileAltName}")
     public void setRealfileNum(int boardNum, String fileAltName);
     
-    @Update("update board set goodCount =+1 where boardnum = #{boardNum} ")
+    @Update("update board set goodCount = goodCount +1 where boardnum = #{boardNum} ")
     public int updateGoodCount(int boardNum);
 
-    @Update("update board set readcount =+1 where boardnum = #{boardNum}")
+    @Update("update board set readcount = readcount +1 where boardnum = #{boardNum}")
     public int updateReadCount(int boardNum);
 
     @Delete("delete from board where boardnum = #{boardNum} ")
