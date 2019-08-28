@@ -42,6 +42,10 @@ public class BoardListServiceImpl implements BoardListService{
 		return boardMapper.updateReadCount(boardNum);
 	}
 
+	public int contentGoodCount(int boardNum) {
+		return boardMapper.updateGoodCount(boardNum);
+	}
+
 	public List<BoardVO> contentBestReadService(LocalDate searchDate) {
 		List<BoardVO> contents = null;
 		try {

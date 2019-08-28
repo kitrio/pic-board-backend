@@ -37,7 +37,7 @@ public interface BoardMapper {
     public void setRealfileNum(int boardNum, String fileAltName);
     
     @Update("update board set goodCount =+1 where boardnum = #{boardNum} ")
-    public int updateGoodCount(int goodCount, int boardNum);
+    public int updateGoodCount(int boardNum);
 
     @Update("update board set readcount =+1 where boardnum = #{boardNum}")
     public int updateReadCount(int boardNum);

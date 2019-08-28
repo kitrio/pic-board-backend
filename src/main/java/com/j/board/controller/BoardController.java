@@ -11,9 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.j.board.domain.BoardVO;
-import com.j.board.persistence.BoardMapper;
 import com.j.board.security.CustomMember;
 import com.j.board.service.BoardListService;
 import com.j.board.service.FileService;
@@ -37,7 +39,7 @@ import com.j.board.service.FileService;
     FileService fileService;
 
     @GetMapping("")
-    public ResponseEntity<Object> getContentsList(@RequestParam int firstPage, @RequestParam int lastPage){
+    public ResponseEntity<Object> getContentsList(@RequestParam("firstpage") int firstPage, @RequestParam("lastpage") int lastPage){
         List<BoardVO> contents = boardListService.contentListReadService(firstPage, lastPage);
         if(contents == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -65,7 +67,7 @@ import com.j.board.service.FileService;
     }
 
     @PostMapping("/content/write/image")
-    public ResponseEntity<String> uploadImg(@RequestPart("img") final MultipartFile imgfile) {
+    public ResponseEntity<String> uploadImg(Principal principal, @RequestPart("img") final MultipartFile imgfile) {
 
         String filePath = fileService.upLoadFile(imgfile);
         if(filePath.equals("invalidfile")){
@@ -84,7 +86,25 @@ import com.j.board.service.FileService;
         return new ResponseEntity<>(content, HttpStatus.OK);
     }
     
-    @GetMapping("/content/delete/{num}")
+    @PutMapping("/content/good/{num}")
+    public ResponseEntity<Object> goodCount(@PathVariable("num") int boardNum) {
+        
+        if(boardListService.contentGoodCount(boardNum) == 1) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PatchMapping("/content/update")
+    public HttpStatus modifyContent(@RequestBody BoardVO contentVO) {
+        if(boardListService.contentModifyService(contentVO) == 1){
+            return HttpStatus.OK;
+        }else {
+            return HttpStatus.BAD_REQUEST;
+        }
+    }
+
+    @DeleteMapping("/content/delete/{num}")
     public HttpStatus deleteContent(@PathVariable int num) {
         if(boardListService.contentDelete(num)){
             return HttpStatus.OK;
@@ -102,4 +122,5 @@ import com.j.board.service.FileService;
         }
         return remoteAdr;
     }
+
 }

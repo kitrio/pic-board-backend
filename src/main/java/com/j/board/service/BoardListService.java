@@ -10,6 +10,7 @@ public interface BoardListService {
 	public boolean contentWriteService(BoardVO contentVO);
 	public boolean contentModifyService(BoardVO contentVO);
 	public BoardVO contentReadService(int boardNum);
+	public int contentGoodCount(int boardNum);
 	public int contentCountUp(int boardNum);
 	public List<BoardVO> contentListReadService(int firstPage, int lastPage);
 	public List<BoardVO> contentBestReadService(LocalDate searchDate);
