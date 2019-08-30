@@ -23,16 +23,16 @@ public class MemberController {
   MemberService memberService;
 
   @PostMapping("/signup")
-  public ResponseEntity<MemberController> signUpMember(@RequestBody MemberVO member){
+  public HttpStatus signUpMember(@RequestBody MemberVO member){
     boolean isSuceess =  memberService.signUpMember(member);
       if(isSuceess){
-        return new ResponseEntity<>(HttpStatus.OK);
+        return HttpStatus.OK;
       }
       else{
-        return new ResponseEntity<>(HttpStatus.CONFLICT);
+        return HttpStatus.CONFLICT;
       }
   }
-  @PostMapping("/info")
+  @PostMapping("/nickname")
   public ResponseEntity<String> getMemberNickname(Principal principal) {
     CustomMember user = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if(user != null){
@@ -41,6 +41,4 @@ public class MemberController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
-  
-
 }
