@@ -3,6 +3,7 @@ package com.j.board.controller;
 import java.security.Principal;
 import java.util.List;
 
+import com.j.board.domain.BoardVO;
 import com.j.board.domain.MemberVO;
 import com.j.board.security.CustomMember;
 import com.j.board.service.MemberService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,9 +46,9 @@ public class MemberController {
     }
   }
 
-  @PostMapping("/info")
-  public ResponseEntity<Object> getMemberInfo(String Nickname) {
-    List<Object> memberContents = null;
+  @PostMapping("/info/{nickname}")
+  public ResponseEntity<Object> getMemberInfo(@PathVariable("nickname") String Nickname) {
+    List<BoardVO> memberContents = null;
     memberContents = memberService.searchMemberContents(Nickname);
     if(memberContents == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -55,7 +57,7 @@ public class MemberController {
     }
   }
 
-  @Delete("delete")
+  @Delete("/delete")
   public HttpStatus deleteMember(Principal principal) {
     CustomMember user = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if(user == null) {

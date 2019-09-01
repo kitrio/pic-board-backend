@@ -2,6 +2,7 @@ package com.j.board.service;
 
 import java.util.List;
 
+import com.j.board.domain.BoardVO;
 import com.j.board.domain.MemberVO;
 import com.j.board.persistence.MemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ public class MemberServiceImpl implements MemberService {
     return isSuccess;
   }
 
-	public List<Object> searchMemberContents(String nickname) {
-    List<Object> memberContents = null;
+	public List<BoardVO> searchMemberContents(String nickname) {
+    List<BoardVO> memberContents = null;
     try {
       memberContents = memberMapper.selectByMemberContent(nickname);
     } catch (Exception e) {
