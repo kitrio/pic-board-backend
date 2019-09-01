@@ -30,6 +30,9 @@ public interface BoardMapper {
     @Select("select * from board where writetime between #{startDay} AND #{endDay} order by goodcount desc LIMIT 0, 19")
     public List<BoardVO> selectWeeklyBestList (@Param("startDay") Timestamp statDay, @Param("endDay") Timestamp endDay);
 
+    @Select("select title, content, readCount, goodCount, filealtname from board where title or content LIKE CONCAT('%', #{keyword},'%') limit #{startPage}, #{endPage}")
+    public List<BoardVO> selectTitleSearch(@Param("keyword") String title, @Param("startPage") int startPage, @Param("endPage") int endPage);
+
     @Update("update board set content = #{content}, title= #{title}, filealtname= #{fileAltName} where boardnum = #{boardNum} ")
     public int updateContent(BoardVO board);
 

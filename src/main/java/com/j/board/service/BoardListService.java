@@ -14,6 +14,7 @@ public interface BoardListService {
 	public int contentCountUp(int boardNum);
 	public List<BoardVO> contentListReadService(int firstPage, int lastPage);
 	public List<BoardVO> contentBestReadService(LocalDate searchDate);
+	public List<BoardVO> contentSearchByTitle(String title, int startPage, int endPage);
 	public boolean contentDelete(int boardNum);
 	public Timestamp getStartDay(LocalDate searchDate);
 	public Timestamp getLastDay(LocalDate searchDate);

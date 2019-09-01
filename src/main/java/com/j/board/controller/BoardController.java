@@ -56,6 +56,17 @@ import com.j.board.service.FileService;
         return new ResponseEntity<>(contents, HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Object> searchContents(@RequestParam("keyword") String keyword, 
+        @RequestParam("startpage") int startPage, @RequestParam("endpage") int endpage) {
+        List<BoardVO> contents = boardListService.contentSearchByTitle(keyword, startPage, endpage);
+        if(contents == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(contents, HttpStatus.OK);
+        }
+    }
+
     @PostMapping("/content/write")
     public void writeContent(Principal principal, @RequestBody BoardVO contentVO, HttpServletRequest request) {
         String ip = getIpAddress(request);

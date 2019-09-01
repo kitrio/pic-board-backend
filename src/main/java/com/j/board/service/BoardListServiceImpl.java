@@ -65,6 +65,17 @@ public class BoardListServiceImpl implements BoardListService{
 		}
 		return contents;
 	}
+
+	public List<BoardVO> contentSearchByTitle(String title, int startPage, int endPage) {
+		List<BoardVO> contents = null;
+		try {
+			contents = boardMapper.selectTitleSearch(title, startPage, endPage);
+		}
+			catch (Exception e) {
+				return null;
+			}
+		return contents;
+	}
 	
 	public Timestamp getStartDay(LocalDate searchDate) {
 		LocalDate firstDay = searchDate.with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
