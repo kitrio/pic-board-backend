@@ -15,6 +15,7 @@ public class MemberServiceImpl implements MemberService {
   @Autowired
   PasswordEncoder bCryptPasswordEncoder;
 
+
   public boolean signUpMember(MemberVO member) {
     boolean isSuccess;
     member.setPassword(bCryptPasswordEncoder.encode(member.getPassword()));
@@ -34,5 +35,13 @@ public class MemberServiceImpl implements MemberService {
       return null;
     }
     return memberContents;
+  }
+
+  public boolean deleteMember(String memberId) {
+    if(memberMapper.deleteMember(memberId) == 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

@@ -70,10 +70,9 @@ public class BoardListServiceImpl implements BoardListService{
 		List<BoardVO> contents = null;
 		try {
 			contents = boardMapper.selectTitleSearch(title, startPage, endPage);
-		}
-			catch (Exception e) {
+		} catch (Exception e) {
 				return null;
-			}
+		}
 		return contents;
 	}
 	

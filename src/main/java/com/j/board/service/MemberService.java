@@ -6,5 +6,6 @@ import com.j.board.domain.MemberVO;
 
 public interface MemberService {
   public boolean signUpMember(MemberVO member);
-	public List<Object> searchMemberContents(String nickname);
+  public List<Object> searchMemberContents(String nickname);
+  public boolean deleteMember(String memberid);
 }

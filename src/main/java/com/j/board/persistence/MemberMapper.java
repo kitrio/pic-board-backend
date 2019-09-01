@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.j.board.domain.MemberVO;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,4 +20,7 @@ public interface MemberMapper {
 
   @Insert("insert into member (memberid, password, nickname) values(#{memberId}, #{password}, #{nickname})")
   public boolean signUpMember(MemberVO vo);
+
+  @Delete("delete * from member where memberid = #{memberId}")
+  public int deleteMember(@Param("memberId") String memberId);
 }
