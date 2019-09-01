@@ -58,8 +58,8 @@ import com.j.board.service.FileService;
 
     @GetMapping("/search")
     public ResponseEntity<Object> searchContents(@RequestParam("keyword") String keyword, 
-        @RequestParam("startpage") int startPage, @RequestParam("endpage") int endpage) {
-        List<BoardVO> contents = boardListService.contentSearchByTitle(keyword, startPage, endpage);
+        @RequestParam("startpage") int startPage, @RequestParam("endpage") int endPage) {
+        List<BoardVO> contents = boardListService.contentSearchByTitle(keyword, startPage, endPage);
         if(contents == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
