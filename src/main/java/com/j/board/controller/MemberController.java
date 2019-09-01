@@ -1,6 +1,7 @@
 package com.j.board.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import com.j.board.domain.MemberVO;
 import com.j.board.security.CustomMember;
@@ -41,4 +42,16 @@ public class MemberController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
+
+  @PostMapping("/info")
+  public ResponseEntity<Object> getMemberInfo(String Nickname) {
+    List<Object> memberContents = null;
+    memberContents = memberService.searchMemberContents(Nickname);
+    if(memberContents == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    } else {
+      return new ResponseEntity<>(memberContents, HttpStatus.OK);
+    }
+  }
+
 }
