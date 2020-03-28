@@ -51,7 +51,7 @@ public class FileServiceImpl implements FileService{
 	private static boolean isValidImage(String fileExtension) {
 		String imgExtension [] = {".png", ".jpeg", ".jpg", ".gif"};
 		for(int i=0;i<imgExtension.length;i++){
-			if(imgExtension[i].equals(fileExtension)) {
+			if(imgExtension[i].equals(fileExtension.toLowerCase())) {
 				return true;
 			}
 		}
