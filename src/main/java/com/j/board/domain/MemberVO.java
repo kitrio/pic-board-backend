@@ -2,11 +2,22 @@ package com.j.board.domain;
 
 import java.sql.Timestamp;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 public class MemberVO {
+	@NotEmpty
+	@Size(min=2, max=12)
 	private String memberId;
+
+	@NotEmpty
+	@Size(min=8)
 	private String password;
-  	private String nickname;
-  	private Timestamp regDate;
+	
+	@NotEmpty
+  private String nickname;
+	
+	private Timestamp regDate;
 	private Timestamp lastLogin;
 	private String authInfo;
 	  

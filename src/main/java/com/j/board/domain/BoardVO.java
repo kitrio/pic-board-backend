@@ -1,9 +1,16 @@
 package com.j.board.domain;
 
+import javax.validation.constraints.Size;
+
 public class BoardVO {
     private int boardNum;
+    
+    @Size(min=1, max=10)
     private String memberId;
+    
+    @Size(min=1, max=11)
     private String nickname;
+    
     private String title;
     private String content;
     private String writeTime;
@@ -81,6 +88,5 @@ public class BoardVO {
     public void setFileAltName(String fileAltName) {
         this.fileAltName = fileAltName;
     }
-    
     
 }
