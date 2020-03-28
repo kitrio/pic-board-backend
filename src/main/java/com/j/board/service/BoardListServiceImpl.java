@@ -62,7 +62,7 @@ public class BoardListServiceImpl implements BoardListService{
 			contents = boardMapper.selectContentsList(firstPage, lastPage);
 		} catch (Exception e) {
 			return null;
-		}
+		}                                                                             
 		return contents;
 	}
 

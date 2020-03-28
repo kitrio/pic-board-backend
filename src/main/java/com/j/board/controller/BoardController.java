@@ -38,7 +38,7 @@ import com.j.board.service.FileService;
     @Autowired
     FileService fileService;
 
-    @GetMapping("")
+    @GetMapping("/contents")
     public ResponseEntity<Object> getContentsList(@RequestParam("firstpage") int firstPage, @RequestParam("lastpage") int lastPage){
         List<BoardVO> contents = boardListService.contentListReadService(firstPage, lastPage);
         if(contents == null){
