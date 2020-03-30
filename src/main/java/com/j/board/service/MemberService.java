@@ -6,7 +6,7 @@ import com.j.board.domain.BoardVO;
 import com.j.board.domain.MemberVO;
 
 public interface MemberService {
-  public boolean signUpMember(MemberVO member);
-  public List<BoardVO>searchMemberContents(String nickname);
-  public boolean deleteMember(String memberid);
+  boolean signUpMember(MemberVO member);
+  List<BoardVO>searchMemberContents(String nickname);
+  boolean deleteMember(String memberid);
 }

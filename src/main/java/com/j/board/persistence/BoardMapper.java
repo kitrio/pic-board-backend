@@ -16,36 +16,36 @@ import com.j.board.domain.FilesVO;
 @Mapper
 public interface BoardMapper {
     @Insert("insert into board(boardNum, nickname, memberid, title, content, readCount, goodCount, ip, filealtname) VALUES(#{boardNum}, #{nickname}, #{memberId}, #{title}, #{content}, #{readCount}, #{goodCount}, #{ip}, #{fileAltName})")
-    public boolean insertContent(BoardVO board);
+    boolean insertContent(BoardVO board);
 
     @Insert("insert into files (filename, filealtname, filepath) VALUES(#{fileName}, #{fileAltName}, #{filePath} )")
-    public int insertFile(FilesVO files);
+    int insertFile(FilesVO files);
 
     @Select("select boardnum, nickname, memberid, title, content, (DATE_FORMAT(writetime, '%Y/%m/%d %h:%i')) as writeTime, readCount, goodCount, filealtname from board where boardnum = #{boardNum}")
-    public BoardVO selectOneContent(int boardNum);
+    BoardVO selectOneContent(int boardNum);
 
     @Select("select * from board limit #{firstPage}, #{lastPage}")
-    public List<BoardVO> selectContentsList (@Param("firstPage") int firstPage, @Param("lastPage") int lastPage);
+    List<BoardVO> selectContentsList (@Param("firstPage") int firstPage, @Param("lastPage") int lastPage);
     
     @Select("select * from board where writetime between #{startDay} AND #{endDay} order by goodcount desc LIMIT 0, 19")
-    public List<BoardVO> selectWeeklyBestList (@Param("startDay") Timestamp statDay, @Param("endDay") Timestamp endDay);
+    List<BoardVO> selectWeeklyBestList(@Param("startDay") Timestamp statDay, @Param("endDay") Timestamp endDay);
 
     @Select("select title, content, readCount, goodCount, filealtname from board where title LIKE CONCAT('%', #{keyword},'%') limit #{startPage}, #{endPage}")
-    public List<BoardVO> selectTitleSearch(@Param("keyword") String title, @Param("startPage") int startPage, @Param("endPage") int endPage);
+    List<BoardVO> selectTitleSearch(@Param("keyword") String title, @Param("startPage") int startPage, @Param("endPage") int endPage);
 
     @Update("update board set content = #{content}, title= #{title}, filealtname= #{fileAltName} where boardnum = #{boardNum} ")
-    public int updateContent(BoardVO board);
+    int updateContent(BoardVO board);
 
     @Update("update files set boardnum = #{boardNum}, where filealtname = #{fileAltName}")
-    public void setRealfileNum(int boardNum, String fileAltName);
+    void setRealfileNum(int boardNum, String fileAltName);
     
     @Update("update board set goodCount = goodCount +1 where boardnum = #{boardNum} ")
-    public int updateGoodCount(int boardNum);
+    int updateGoodCount(int boardNum);
 
     @Update("update board set readcount = readcount +1 where boardnum = #{boardNum}")
-    public int updateReadCount(int boardNum);
+    int updateReadCount(int boardNum);
 
-    @Delete("delete from board where boardnum = #{boardNum} ")
-    public int deleteContent(int boardnum);
+    @Delete("delete from board where boardnum = #{boardNum} and memberid = #{memberid} ")
+    int deleteContent(int boardNum, String memberid);
 
 }
