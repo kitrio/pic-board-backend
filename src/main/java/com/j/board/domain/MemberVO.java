@@ -13,19 +13,21 @@ public class MemberVO {
 	@NotEmpty
 	@Size(min=8)
 	private String password;
-	
+
 	@NotEmpty
-  private String nickname;
-	
+	@Size(max=12)
+  	private String nickname;
+
 	private Timestamp regDate;
 	private Timestamp lastLogin;
+
+	@NotEmpty
 	private String authInfo;
-	  
+
 	public MemberVO() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
-	
+
 	public MemberVO(String memberId, String password, String nickname, Timestamp regDate, Timestamp lastLogin, String authInfo) {
 		this.memberId = memberId;
 		this.password = password;
@@ -34,7 +36,7 @@ public class MemberVO {
 		this.lastLogin = lastLogin;
 		this.authInfo = authInfo;
 	}
-	
+
 	public String getMemberId() {
 		return memberId;
 	}

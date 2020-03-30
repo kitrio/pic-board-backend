@@ -1,18 +1,24 @@
 package com.j.board.domain;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class BoardVO {
     private int boardNum;
-    
-    @Size(min=1, max=10)
+    @NotBlank
+    @Size(max=10)
     private String memberId;
-    
+    @NotBlank
     @Size(min=1, max=11)
     private String nickname;
-    
+
+    @NotBlank
     private String title;
+
+    @NotBlank
     private String content;
+
+    @NotBlank
     private String writeTime;
     private int readCount;
     private int goodCount;
