@@ -1,11 +1,9 @@
 package com.j.board.config;
 
 import java.util.Arrays;
+import java.util.Collections;
 
-import com.j.board.security.LoginFailureHandler;
-import com.j.board.security.LoginSuccessHandler;
-import com.j.board.security.MemberDetailsService;
-import com.j.board.security.RestAuthenticationEntryPoint;
+import com.j.board.security.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,15 +35,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers("/authlogin").permitAll()
             .antMatchers("/member/signup").permitAll()
-            .antMatchers("/member/info").permitAll()
+            .antMatchers("/member/info/**").permitAll()
             .antMatchers("/auth/admin/**").hasRole("ADMIN")
             .antMatchers("/auth/**").hasAnyRole("ADMIN", "USER")
-            .antMatchers("/list/content/write").hasAnyRole("ADMIN", "USER")
-            .antMatchers("/list/content/modify").hasAnyRole("ADMIN", "USER")
-            .antMatchers("/list/content/delete").hasAnyRole("ADMIN", "USER")
+            .antMatchers("/list/content/write/**").hasAnyRole("ADMIN", "USER")
+            .antMatchers("/list/content/modify/**").hasAnyRole("ADMIN", "USER")
+            .antMatchers("/list/content/delete/**").hasAnyRole("ADMIN", "USER")
             .antMatchers("/list/content/write/image").hasAnyRole("ADMIN", "USER")
             .antMatchers("/list/**").permitAll()
-            .antMatchers("/list/content/**").permitAll()
             .anyRequest().authenticated();
         
         httpSecurity
@@ -60,6 +57,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
             .logout()
             .logoutUrl("/member/logout")
+            .logoutSuccessHandler(logoutSuccessHandler())
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID");
 
@@ -86,6 +84,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public LogoutSuccessHandler logoutSuccessHandler() {
+        return new LogoutSuccessHandler();
+    }
+
+    @Bean
     public LoginFailureHandler loginFailureHandler() {
         return new LoginFailureHandler();
     }
@@ -96,14 +99,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Value("${list_allow_origin_url}")
     private String allowOriginUrl;
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(allowOriginUrl));
+        configuration.setAllowedOrigins(Collections.singletonList(allowOriginUrl));
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
