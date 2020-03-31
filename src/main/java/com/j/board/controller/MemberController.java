@@ -8,11 +8,11 @@ import com.j.board.domain.MemberVO;
 import com.j.board.security.CustomMember;
 import com.j.board.service.MemberService;
 
-import org.apache.ibatis.annotations.Delete;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,13 +31,13 @@ public class MemberController {
   }
 
   @PostMapping("/signup")
-  public HttpStatus signUpMember(@RequestBody MemberVO member){
+  public ResponseEntity<String> signUpMember(@RequestBody MemberVO member){
     boolean isSuceess =  memberService.signUpMember(member);
       if(isSuceess){
-        return HttpStatus.OK;
+        return new ResponseEntity<>(HttpStatus.OK);
       }
       else{
-        return HttpStatus.CONFLICT;
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
       }
   }
   @PostMapping("/nickname")
@@ -50,10 +50,10 @@ public class MemberController {
     }
   }
 
-  @PostMapping("/info/{nickname}")
-  public ResponseEntity<Object> getMemberInfo(@PathVariable("nickname") String Nickname) {
-    List<BoardVO> memberContents = null;
-    memberContents = memberService.searchMemberContents(Nickname);
+  @GetMapping("/info/{nickname}")
+  public ResponseEntity<Object> getMemberInfo(@PathVariable("nickname") String nickname) {
+    List<BoardVO> memberContents;
+    memberContents = memberService.searchMemberContents(nickname);
     if(memberContents == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     } else {
@@ -61,17 +61,17 @@ public class MemberController {
     }
   }
 
-  @Delete("/delete")
-  public HttpStatus deleteMember(Principal principal) {
+  @DeleteMapping("")
+  public ResponseEntity<Object> deleteMember() {
     CustomMember user = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if(user == null) {
-      return HttpStatus.FORBIDDEN;
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     } else {
       String userId = user.getMemberVO().getMemberId();
       if(memberService.deleteMember(userId)) {
-        return HttpStatus.OK;
+        return new ResponseEntity<>(HttpStatus.OK);
       } else {
-        return HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       }
     }
   }

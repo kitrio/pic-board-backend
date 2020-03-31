@@ -1,6 +1,6 @@
 package com.j.board.controller;
 
-import java.security.Principal;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -71,7 +71,7 @@ import com.j.board.service.FileService;
     }
 
     @PostMapping("/content/write")
-    public void writeContent(Principal principal, @RequestBody BoardVO contentVO, HttpServletRequest request) {
+    public void writeContent( @RequestBody BoardVO contentVO, HttpServletRequest request) {
         String ip = getIpAddress(request);
         CustomMember user = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         contentVO.setMemberId(user.getUsername());
@@ -81,7 +81,7 @@ import com.j.board.service.FileService;
     }
 
     @PostMapping("/content/write/image")
-    public ResponseEntity<String> uploadImg(Principal principal, @RequestPart("img") final MultipartFile imgfile) {
+    public ResponseEntity<String> uploadImg(@RequestPart("img") final MultipartFile imgfile) {
 
         String filePath = fileService.upLoadFile(imgfile);
         if(filePath.equals("invalidfile")){
@@ -110,31 +110,33 @@ import com.j.board.service.FileService;
     }
 
     @PatchMapping("/content/update")
-    public HttpStatus modifyContent(@RequestBody BoardVO contentVO) {
+    public ResponseEntity<Object> modifyContent(@RequestBody BoardVO contentVO) {
         if(boardListService.contentModifyService(contentVO) == 1){
-            return HttpStatus.OK;
+            return new ResponseEntity<>(HttpStatus.OK);
         }else {
-            return HttpStatus.BAD_REQUEST;
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping("/content/delete/{num}")
-    public HttpStatus deleteContent(@PathVariable int num) {
-        if(boardListService.contentDelete(num)){
-            return HttpStatus.OK;
+    public ResponseEntity<Object> deleteContent(@PathVariable("num") int num){
+        CustomMember user = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String memberId = user.getUsername();
+        if(boardListService.contentDelete(num, memberId)){
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     private String getIpAddress(HttpServletRequest request) {
-        String remoteAdr = "";
+        String remoteAddr = "";
         if(request != null){
-            remoteAdr = request.getHeader("X-FORWADED-FOR");
-            if (remoteAdr == null || "".equals(remoteAdr)) {
-                remoteAdr = request.getRemoteAddr();
+            remoteAddr = request.getHeader("X-FORWADED-FOR");
+            if (remoteAddr == null || "".equals(remoteAddr)) {
+                remoteAddr = request.getRemoteAddr();
             }
         }
-        return remoteAdr;
+        return remoteAddr;
     }
 
 }
