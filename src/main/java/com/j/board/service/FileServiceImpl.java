@@ -23,11 +23,10 @@ public class FileServiceImpl implements FileService{
 
 	@Value("${file_save_path}")
 	private String SAVE_PATH;
-	
+
 	public String upLoadFile(MultipartFile file) {
 		String fileExtention = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-		fileExtention.toLowerCase();
-		if(isValidImage(fileExtention) == true){
+		if(isValidImage(fileExtention)){
 			String uuid = UUID.randomUUID().toString();
 			FilesVO filesVO = new FilesVO();
 			filesVO.setFileName(file.getOriginalFilename());
@@ -35,11 +34,11 @@ public class FileServiceImpl implements FileService{
 			filesVO.setFilePath(SAVE_PATH+ filesVO.getFileAltName());
 
 			File saveFile = new File(SAVE_PATH + filesVO.getFileAltName());
-			
+
 			try {
 				file.transferTo(saveFile);
 				boardMapper.insertFile(filesVO);
-				Thumbnails.of(saveFile)					
+				Thumbnails.of(saveFile)
 					.size(400,300)
 					.toFile(SAVE_PATH+"thumb_"+saveFile.getName());
 			} catch (IOException e) {
@@ -52,7 +51,7 @@ public class FileServiceImpl implements FileService{
 	}
 
 	private static boolean isValidImage(String fileExtension) {
-		String imgExtension [] = {".png", ".jpeg", ".jpg", ".gif"};
+		String[] imgExtension = {".png", ".jpeg", ".jpg", ".gif"};
 		for(int i=0;i<imgExtension.length;i++){
 			if(imgExtension[i].equals(fileExtension.toLowerCase())) {
 				return true;

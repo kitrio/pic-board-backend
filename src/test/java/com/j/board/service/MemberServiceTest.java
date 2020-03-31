@@ -40,7 +40,7 @@ public class MemberServiceTest {
   @Before
   public void setUp() throws Exception {
     Timestamp today = new Timestamp(new Date().getTime());
-    localTimeStd = LocalDate.of(2020, 01, 1);
+    localTimeStd = LocalDate.of(2020, 1, 1);
     
     
     memberVO= new MemberVO("test","testpasswd","testname", today, today,"ROLE_USER");

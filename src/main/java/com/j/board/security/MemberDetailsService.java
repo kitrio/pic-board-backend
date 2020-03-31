@@ -16,7 +16,7 @@ public class MemberDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
-    MemberVO vo = null;
+    MemberVO vo;
     try {
       vo = memberMapper.findByUserid(memberId);
     } catch (UsernameNotFoundException e) {

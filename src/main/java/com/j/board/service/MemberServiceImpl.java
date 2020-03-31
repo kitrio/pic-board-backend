@@ -5,7 +5,6 @@ import java.util.List;
 import com.j.board.domain.BoardVO;
 import com.j.board.domain.MemberVO;
 import com.j.board.persistence.MemberMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +32,7 @@ public class MemberServiceImpl implements MemberService {
   }
 
 	public List<BoardVO> searchMemberContents(String nickname) {
-    List<BoardVO> memberContents = null;
+    List<BoardVO> memberContents;
     try {
       memberContents = memberMapper.selectByMemberContent(nickname);
     } catch (Exception e) {
@@ -43,10 +42,6 @@ public class MemberServiceImpl implements MemberService {
   }
 
   public boolean deleteMember(String memberId) {
-    if(memberMapper.deleteMember(memberId) == 1) {
-      return true;
-    } else {
-      return false;
-    }
+    return memberMapper.deleteMember(memberId) == 1;
   }
 }

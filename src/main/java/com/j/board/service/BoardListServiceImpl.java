@@ -31,18 +31,17 @@ public class BoardListServiceImpl implements BoardListService{
 	public int contentModifyService(BoardVO contentVO) {
 		return boardMapper.updateContent(contentVO);
 	}
-
+	
 	public BoardVO contentReadService(int boardNum) {
-		contentCountUp(boardNum);
+			contentCountUp(boardNum);
 		return boardMapper.selectOneContent(boardNum);
 	}
 
-	public boolean contentDelete(int boardNum) {
-		if(boardMapper.deleteContent(boardNum) == 1) {
-			return true;
-		} else {
-			return false;
+	public boolean contentDelete(int boardNum, String memberId) {
+		if(memberId.equals(contentReadService(boardNum).getMemberId())){
+			return boardMapper.deleteContent(boardNum, memberId) == 1;
 		}
+		return false;
 	}
 
 	public int contentCountUp(int boardNum) {
@@ -64,7 +63,7 @@ public class BoardListServiceImpl implements BoardListService{
 	}
 
 	public List<BoardVO> contentListReadService(int firstPage, int lastPage) {
-		List<BoardVO> contents = null;
+		List<BoardVO> contents;
 		try {
 			contents = boardMapper.selectContentsList(firstPage, lastPage);
 		} catch (Exception e) {
