@@ -11,10 +11,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberServiceImpl implements MemberService {
-  @Autowired
-  MemberMapper memberMapper;
-  @Autowired
-  PasswordEncoder bCryptPasswordEncoder;
+
+  private final MemberMapper memberMapper;
+  private final PasswordEncoder bCryptPasswordEncoder;
+
+  public MemberServiceImpl(MemberMapper memberMapper, PasswordEncoder bCryptPasswordEncoder) {
+    this.memberMapper = memberMapper;
+    this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+  }
 
 
   public boolean signUpMember(MemberVO member) {

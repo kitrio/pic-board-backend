@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,11 +31,15 @@ import com.j.board.service.FileService;
  @RestController
  @RequestMapping("/list")
  public class BoardController {
- 	@Autowired
-    BoardListService boardListService;
-    
-    @Autowired
-    FileService fileService;
+
+ 	private final FileService fileService;
+    private final BoardListService boardListService;
+
+    public BoardController(FileService fileService, BoardListService boardListService) {
+        this.fileService = fileService;
+        this.boardListService = boardListService;
+    }
+
 
     @GetMapping("/contents")
     public ResponseEntity<Object> getContentsList(@RequestParam("firstpage") int firstPage, @RequestParam("lastpage") int lastPage){

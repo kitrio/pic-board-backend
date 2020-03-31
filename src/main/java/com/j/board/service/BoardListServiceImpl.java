@@ -1,6 +1,7 @@
 package com.j.board.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -14,9 +15,15 @@ import com.j.board.persistence.BoardMapper;
 
 @Service
 public class BoardListServiceImpl implements BoardListService{
-	@Autowired
-	BoardMapper boardMapper;
-	
+
+	final BoardMapper boardMapper;
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	public BoardListServiceImpl(BoardMapper boardMapper) {
+		this.boardMapper = boardMapper;
+	}
+
 	public boolean contentWriteService(BoardVO contentVO) {
 		return boardMapper.insertContent(contentVO);
 	}

@@ -19,12 +19,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequestMapping("/member")
 public class MemberController {
 
-  @Autowired
-  MemberService memberService;
+  final private MemberService memberService;
+
+  public MemberController(MemberService memberService) {
+    this.memberService = memberService;
+  }
 
   @PostMapping("/signup")
   public HttpStatus signUpMember(@RequestBody MemberVO member){
