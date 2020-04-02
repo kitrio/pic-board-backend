@@ -16,27 +16,30 @@ import com.j.board.persistence.BoardMapper;
 @Service
 public class BoardListServiceImpl implements BoardListService{
 
-	final BoardMapper boardMapper;
-
+	private final BoardMapper boardMapper;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public BoardListServiceImpl(BoardMapper boardMapper) {
 		this.boardMapper = boardMapper;
 	}
 
+	@Override
 	public boolean contentWriteService(BoardVO contentVO) {
 		return boardMapper.insertContent(contentVO);
 	}
 
+	@Override
 	public int contentModifyService(BoardVO contentVO) {
 		return boardMapper.updateContent(contentVO);
 	}
-	
+
+	@Override
 	public BoardVO contentReadService(int boardNum) {
 			contentCountUp(boardNum);
 		return boardMapper.selectOneContent(boardNum);
 	}
 
+	@Override
 	public boolean contentDelete(int boardNum, String memberId) {
 		if(memberId.equals(contentReadService(boardNum).getMemberId())){
 			return boardMapper.deleteContent(boardNum, memberId) == 1;
@@ -44,24 +47,28 @@ public class BoardListServiceImpl implements BoardListService{
 		return false;
 	}
 
+	@Override
 	public int contentCountUp(int boardNum) {
 		return boardMapper.updateReadCount(boardNum);
 	}
 
+	@Override
 	public int contentGoodCount(int boardNum) {
 		return boardMapper.updateGoodCount(boardNum);
 	}
 
+	@Override
 	public List<BoardVO> contentBestReadService(LocalDate searchDate) {
-		List<BoardVO> contents = null;
-		try {
+		List<BoardVO> contents;
+//		try {
 			contents = boardMapper.selectWeeklyBestList(getStartDay(searchDate), getLastDay(searchDate));
-		} catch (Exception e) {
-			return null;
-		}
+//		} catch (Exception e) {
+//			return null;
+//		}
 		return contents;
 	}
 
+	@Override
 	public List<BoardVO> contentListReadService(int firstPage, int lastPage) {
 		List<BoardVO> contents;
 		try {
@@ -72,8 +79,9 @@ public class BoardListServiceImpl implements BoardListService{
 		return contents;
 	}
 
+	@Override
 	public List<BoardVO> contentSearchByTitle(String title, int startPage, int endPage) {
-		List<BoardVO> contents = null;
+		List<BoardVO> contents;
 		try {
 			contents = boardMapper.selectTitleSearch(title, startPage, endPage);
 		} catch (Exception e) {
@@ -81,16 +89,17 @@ public class BoardListServiceImpl implements BoardListService{
 		}
 		return contents;
 	}
-	
-	public Timestamp getStartDay(LocalDate searchDate) {
+
+
+	private Timestamp getStartDay(LocalDate searchDate) {
 		LocalDate firstDay = searchDate.with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
-		Timestamp timestamp = Timestamp.valueOf(firstDay.atStartOfDay());
-		return timestamp;
-		
+		return Timestamp.valueOf(firstDay.atStartOfDay());
+
 	}
-	public Timestamp getLastDay(LocalDate searchDate){
+
+	private Timestamp getLastDay(LocalDate searchDate){
 		LocalDate lastDay = searchDate.with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
-		Timestamp timestamp = Timestamp.valueOf(lastDay.atStartOfDay());
-		return timestamp;
+		return Timestamp.valueOf(lastDay.atStartOfDay());
+
 	}
 }

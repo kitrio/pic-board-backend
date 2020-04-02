@@ -12,10 +12,12 @@ import net.coobird.thumbnailator.Thumbnails;
 
 import com.j.board.domain.FilesVO;
 import com.j.board.persistence.BoardMapper;
+
 @Service
 public class FileServiceImpl implements FileService{
 
 	private final BoardMapper boardMapper;
+	private File saveFile;
 
 	public FileServiceImpl(BoardMapper boardMapper) {
 		this.boardMapper = boardMapper;
@@ -24,6 +26,7 @@ public class FileServiceImpl implements FileService{
 	@Value("${file_save_path}")
 	private String SAVE_PATH;
 
+	@Override
 	public String upLoadFile(MultipartFile file) {
 		String fileExtention = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 		if(isValidImage(fileExtention)){
@@ -33,7 +36,7 @@ public class FileServiceImpl implements FileService{
 			filesVO.setFileAltName(uuid + fileExtention);
 			filesVO.setFilePath(SAVE_PATH+ filesVO.getFileAltName());
 
-			File saveFile = new File(SAVE_PATH + filesVO.getFileAltName());
+			saveFile = new File(SAVE_PATH + filesVO.getFileAltName());
 
 			try {
 				file.transferTo(saveFile);
@@ -42,6 +45,7 @@ public class FileServiceImpl implements FileService{
 					.size(400,300)
 					.toFile(SAVE_PATH+"thumb_"+saveFile.getName());
 			} catch (IOException e) {
+
 				return "fail";
 			}
 			return filesVO.getFileAltName();
@@ -52,7 +56,7 @@ public class FileServiceImpl implements FileService{
 
 	private static boolean isValidImage(String fileExtension) {
 		String[] imgExtension = {".png", ".jpeg", ".jpg", ".gif"};
-		for(int i=0;i<imgExtension.length;i++){
+		for(int i=0; i<imgExtension.length; i++){
 			if(imgExtension[i].equals(fileExtension.toLowerCase())) {
 				return true;
 			}

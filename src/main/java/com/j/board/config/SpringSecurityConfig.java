@@ -59,12 +59,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .logoutUrl("/member/logout")
             .logoutSuccessHandler(logoutSuccessHandler())
             .invalidateHttpSession(true)
-            .deleteCookies("JSESSIONID");
+            .deleteCookies("PICSESSIONID");
 
     }
     @Autowired
     MemberDetailsService memberDetailsService;
-    
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -97,6 +97,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     public RestAuthenticationEntryPoint restAuthenticationEntryPoint() {
         return new RestAuthenticationEntryPoint();
     }
+
     @Value("${list_allow_origin_url}")
     private String allowOriginUrl;
 

@@ -1,6 +1,5 @@
 package com.j.board.service;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,7 +15,4 @@ public interface BoardListService {
 	List<BoardVO> contentBestReadService(LocalDate searchDate);
 	List<BoardVO> contentSearchByTitle(String title, int startPage, int endPage);
 	boolean contentDelete(int boardNum, String memberId);
-	Timestamp getStartDay(LocalDate searchDate);
-	Timestamp getLastDay(LocalDate searchDate);
-
 }
