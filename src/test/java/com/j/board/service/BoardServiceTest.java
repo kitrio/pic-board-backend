@@ -24,8 +24,9 @@ public class BoardServiceTest {
     BoardMapper boardMapper;
     @Mock
     BoardVO postOne;
-  
+
     public LocalDate localTimeStd;
+    public Timestamp lastMonday;
 
     @Before
     public void setUp() {
@@ -45,10 +46,15 @@ public class BoardServiceTest {
 
   @Test
   public void contentReadServiceTest() {
-    
+
     BoardVO result = new BoardVO();
     when(boardMapper.selectOneContent(1)).thenReturn(postOne);
     result = boardListService.contentReadService(1);
     assertEquals(postOne, result);
+    }
+
+    @Test
+    public void contentBestReadServiceTest() {
+
     }
 }

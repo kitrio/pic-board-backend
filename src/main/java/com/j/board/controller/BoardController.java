@@ -1,6 +1,5 @@
 package com.j.board.controller;
 
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -28,18 +27,17 @@ import com.j.board.security.CustomMember;
 import com.j.board.service.BoardListService;
 import com.j.board.service.FileService;
 
- @RestController
- @RequestMapping("/list")
- public class BoardController {
+@RestController
+@RequestMapping("/list")
+public class BoardController {
 
- 	private final FileService fileService;
+    private final FileService fileService;
     private final BoardListService boardListService;
 
     public BoardController(FileService fileService, BoardListService boardListService) {
         this.fileService = fileService;
         this.boardListService = boardListService;
     }
-
 
     @GetMapping("/contents")
     public ResponseEntity<Object> getContentsList(@RequestParam("firstpage") int firstPage, @RequestParam("lastpage") int lastPage){
@@ -49,10 +47,11 @@ import com.j.board.service.FileService;
         }
         return new ResponseEntity<>(contents, HttpStatus.OK);
     }
+
     @GetMapping("/best")
     public ResponseEntity<Object> getBestContents(@RequestParam("date") String date) {
-        LocalDate localDate = LocalDate.parse(date,DateTimeFormatter.ISO_DATE);
-        List<BoardVO> contents = boardListService.contentBestReadService(localDate);
+        LocalDate dateOfWeek = LocalDate.parse(date,DateTimeFormatter.ISO_DATE);
+        List<BoardVO> contents = boardListService.contentBestReadService(dateOfWeek);
         if(contents == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -60,8 +59,8 @@ import com.j.board.service.FileService;
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> searchContents(@RequestParam("keyword") String keyword, 
-        @RequestParam("startpage") int startPage, @RequestParam("endpage") int endPage) {
+    public ResponseEntity<Object> searchContents(@RequestParam("keyword") String keyword,
+                                                 @RequestParam("startpage") int startPage, @RequestParam("endpage") int endPage) {
         List<BoardVO> contents = boardListService.contentSearchByTitle(keyword, startPage, endPage);
         if(contents == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -71,17 +70,20 @@ import com.j.board.service.FileService;
     }
 
     @PostMapping("/content/write")
-    public void writeContent( @RequestBody BoardVO contentVO, HttpServletRequest request) {
+    public ResponseEntity<Object> writeContent(@RequestBody BoardVO contentVO, HttpServletRequest request) {
         String ip = getIpAddress(request);
-        CustomMember user = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        contentVO.setMemberId(user.getUsername());
-        contentVO.setNickname(user.getMemberVO().getNickname());
+        CustomMember member = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        contentVO.setMemberId(member.getUsername());
+        contentVO.setNickname(member.getMember().getNickname());
         contentVO.setIp(ip);
-        boardListService.contentWriteService(contentVO);
+        if(boardListService.contentWriteService(contentVO)){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/content/write/image")
-    public ResponseEntity<String> uploadImg(@RequestPart("img") final MultipartFile imgfile) {
+    public ResponseEntity<Object> uploadImg(@RequestPart("img") final MultipartFile imgfile) {
 
         String filePath = fileService.upLoadFile(imgfile);
         if(filePath.equals("invalidfile")){
@@ -92,17 +94,17 @@ import com.j.board.service.FileService;
 
     @GetMapping("/content/{num}")
     public ResponseEntity<Object> readContent(@PathVariable("num") int num) {
-        
+
         BoardVO content = boardListService.contentReadService(num);
         if(content == null ) {
-           return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(content, HttpStatus.OK);
     }
-    
+
     @PutMapping("/content/good/{num}")
     public ResponseEntity<Object> goodCount(@PathVariable("num") int boardNum) {
-        
+
         if(boardListService.contentGoodCount(boardNum) == 1) {
             return new ResponseEntity<>(HttpStatus.OK);
         }

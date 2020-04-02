@@ -11,27 +11,27 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 public class CustomMember extends User {
-  
- private MemberVO memberVO;
-  
-  public MemberVO getMemberVO() {
-    return memberVO;
-  }
 
-  public CustomMember(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-    super(username, password, authorities);
-  }
+    private static final long serialVersionUID = 1L;
+    private MemberVO member;
 
-    public CustomMember(MemberVO vo) {
-    super(vo.getMemberId(), vo.getPassword(), createUserRole(vo.getAuthInfo()));
-      this.memberVO = vo;
-  }
+    public MemberVO getMember() {
+        return member;
+    }
 
-  private static final long serialVersionUID = 1L;
-  
-  private static List<GrantedAuthority> createUserRole(String authInfo) {
-    List<GrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(new SimpleGrantedAuthority(authInfo));
-    return authorities;
-  }
+    public CustomMember(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, authorities);
+    }
+
+    public CustomMember(MemberVO member) {
+        super(member.getMemberId(), member.getPassword(), createUserRole(member.getAuthInfo()));
+        this.member = member;
+    }
+
+    private static List<GrantedAuthority> createUserRole(String authInfo) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(authInfo));
+        return authorities;
+    }
+
 }
