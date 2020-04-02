@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ErrorPathController implements ErrorController{
 
-    @GetMapping("error")
+    @GetMapping("/error")
     public ResponseEntity<ErrorPathController> responseError(){
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
