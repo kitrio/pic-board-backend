@@ -3,12 +3,15 @@ package com.j.board.config;
 import java.util.Arrays;
 import java.util.Collections;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j.board.security.*;
 
+import com.j.board.util.HtmlCharacterEscapes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,6 +27,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+    private final ObjectMapper objectMapper;
+
+    public SpringSecurityConfig(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception{
@@ -98,14 +106,20 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         return new RestAuthenticationEntryPoint();
     }
 
+    @Bean
+    public MappingJackson2HttpMessageConverter jsonEscapeConverter() {
+        ObjectMapper copy = objectMapper.copy();
+        copy.getFactory().setCharacterEscapes(new HtmlCharacterEscapes());
+        return new MappingJackson2HttpMessageConverter(copy);
+    }
+
     @Value("${list_allow_origin_url}")
     private String allowOriginUrl;
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList(allowOriginUrl));
+        configuration.setAllowedOrigins(Arrays.asList(allowOriginUrl));
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Collections.singletonList("*"));
