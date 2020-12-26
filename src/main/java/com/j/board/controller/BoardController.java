@@ -31,15 +31,6 @@ public class BoardController {
         this.boardListService = boardListService;
     }
 
-    @GetMapping("/contents")
-    public ResponseEntity<Object> getContentsList(@RequestParam("firstpage") int firstPage, @RequestParam("lastpage") int lastPage){
-        List<BoardVO> contents = boardListService.contentListReadService(firstPage, lastPage);
-        if(contents == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(contents, HttpStatus.OK);
-    }
-
     @GetMapping("/best")
     public ResponseEntity<Object> getBestContents(@RequestParam("date") String date) {
         LocalDate dateOfWeek = LocalDate.parse(date,DateTimeFormatter.ISO_DATE);
@@ -61,7 +52,16 @@ public class BoardController {
         }
     }
 
-    @PostMapping("/content/write")
+    @GetMapping("/contents")
+    public ResponseEntity<Object> getContentsList(@RequestParam("firstpage") int firstPage, @RequestParam("lastpage") int lastPage){
+        List<BoardVO> contents = boardListService.contentListReadService(firstPage, lastPage);
+        if(contents == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(contents, HttpStatus.OK);
+    }
+
+    @PostMapping("/content/")
     public ResponseEntity<Object> writeContent(@RequestBody BoardVO contentVO, HttpServletRequest request) {
         String ip = getIpAddress(request);
         CustomMember member = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -74,7 +74,7 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/content/write/image")
+    @PostMapping("/content/image")
     public ResponseEntity<Object> uploadImg(@RequestPart("img") final MultipartFile imgfile) {
 
         String filePath = fileService.upLoadFile(imgfile);
@@ -127,18 +127,7 @@ public class BoardController {
                 .body(content);
     }
 
-    @PutMapping("/content/good/{num}")
-    public ResponseEntity<Object> goodCount(@PathVariable("num") int boardNum, @AuthenticationPrincipal CustomMember principal) {
-        if(principal == null)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-
-        if(boardListService.contentGoodCount(boardNum, principal.getUsername())) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
-    @PatchMapping("/content/update")
+    @PatchMapping("/content/")
     public ResponseEntity<Object> modifyContent(@RequestBody BoardVO contentVO) {
         if(boardListService.contentModifyService(contentVO) == 1){
             return new ResponseEntity<>(HttpStatus.OK);
@@ -147,7 +136,7 @@ public class BoardController {
         }
     }
 
-    @DeleteMapping("/content/delete/{num}")
+    @DeleteMapping("/content/{num}")
     public ResponseEntity<Object> deleteContent(@PathVariable("num") int num){
         CustomMember user = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String memberId = user.getUsername();
@@ -166,6 +155,17 @@ public class BoardController {
             }
         }
         return remoteAddr;
+    }
+
+    @PutMapping("/content/good/{num}")
+    public ResponseEntity<Object> goodCount(@PathVariable("num") int boardNum, @AuthenticationPrincipal CustomMember principal) {
+        if(principal == null)
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
+        if(boardListService.contentGoodCount(boardNum, principal.getUsername())) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }
