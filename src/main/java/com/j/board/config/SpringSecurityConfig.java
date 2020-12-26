@@ -1,7 +1,6 @@
 package com.j.board.config;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j.board.security.*;
@@ -122,7 +121,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(Arrays.asList(allowOriginUrl));
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("application/json","access-control-allow-origin","x-xsrf-token"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
