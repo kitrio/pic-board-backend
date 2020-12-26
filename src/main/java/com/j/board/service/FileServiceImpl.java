@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +19,9 @@ import com.j.board.persistence.BoardMapper;
 public class FileServiceImpl implements FileService{
 
 	private final BoardMapper boardMapper;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private File saveFile;
-
+	
 	public FileServiceImpl(BoardMapper boardMapper) {
 		this.boardMapper = boardMapper;
 	}
@@ -37,7 +40,6 @@ public class FileServiceImpl implements FileService{
 			filesVO.setFilePath(SAVE_PATH+ filesVO.getFileAltName());
 
 			saveFile = new File(SAVE_PATH + filesVO.getFileAltName());
-
 			try {
 				file.transferTo(saveFile);
 				boardMapper.insertFile(filesVO);
@@ -45,11 +47,12 @@ public class FileServiceImpl implements FileService{
 					.size(400,300)
 					.toFile(SAVE_PATH+"thumb_"+saveFile.getName());
 			} catch (IOException e) {
-
+				logger.info(e.getMessage(),"fail");
 				return "fail";
 			}
 			return filesVO.getFileAltName();
 		} else {
+			logger.info("invalid file","fail");
 			return "invalidfile";
 		}
 	}

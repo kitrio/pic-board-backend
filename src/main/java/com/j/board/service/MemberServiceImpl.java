@@ -6,15 +6,17 @@ import com.j.board.domain.BoardVO;
 import com.j.board.domain.MemberVO;
 import com.j.board.persistence.MemberMapper;
 import com.j.board.security.CustomMember;
-import org.apache.ibatis.javassist.bytecode.DuplicateMemberException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class MemberServiceImpl implements MemberService {
 
   private final MemberMapper memberMapper;
   private final PasswordEncoder bCryptPasswordEncoder;
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public MemberServiceImpl(MemberMapper memberMapper, PasswordEncoder bCryptPasswordEncoder) {
     this.memberMapper = memberMapper;
@@ -25,11 +27,12 @@ public class MemberServiceImpl implements MemberService {
   public boolean signUpMember(MemberVO member) {
     boolean isSuccess;
     member.setPassword(bCryptPasswordEncoder.encode(member.getPassword()));
+    member.setAuthInfo("ROLE_USER");
     try {
-      isSuccess =  memberMapper.signUpMember(member);
-      } catch (Exception e) {
-      e.printStackTrace();
-        return false;
+      isSuccess = memberMapper.signUpMember(member);
+    } catch (Exception e) {
+      logger.error("not signed member", e);
+      return false;
     }
     return isSuccess;
   }
@@ -40,9 +43,10 @@ public class MemberServiceImpl implements MemberService {
     try {
       memberContents = memberMapper.selectByMemberContent(nickname);
     } catch (Exception e) {
+      logger.error("not found memberContents", e);
       return null;
     }
-  return memberContents;
+    return memberContents;
   }
 
   @Override

@@ -14,7 +14,7 @@ import com.j.board.domain.BoardVO;
 import com.j.board.persistence.BoardMapper;
 
 @Service
-public class BoardListServiceImpl implements BoardListService{
+public class BoardListServiceImpl implements BoardListService {
 
 	private final BoardMapper boardMapper;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -35,36 +35,55 @@ public class BoardListServiceImpl implements BoardListService{
 
 	@Override
 	public BoardVO contentReadService(int boardNum) {
-			contentCountUp(boardNum);
-		return boardMapper.selectOneContent(boardNum);
+		try {
+			return boardMapper.selectOneContent(boardNum);
+		} catch (Exception e) {
+			logger.error("not read content", e);
+			return null;
+		}
 	}
 
 	@Override
 	public boolean contentDelete(int boardNum, String memberId) {
-		if(memberId.equals(contentReadService(boardNum).getMemberId())){
-			return boardMapper.deleteContent(boardNum, memberId) == 1;
+		try {
+			if (memberId.equals(contentReadService(boardNum).getMemberId())) {
+				return boardMapper.deleteContent(boardNum, memberId) == 1;
+			}
+		} catch (Exception e) {
+			logger.error("not delete content", e);
 		}
 		return false;
 	}
 
 	@Override
-	public int contentCountUp(int boardNum) {
-		return boardMapper.updateReadCount(boardNum);
+	public void contentCountUp(int boardNum) {
+		try {
+			boardMapper.updateReadCount(boardNum);
+		} catch (Exception e) {
+			logger.error("not update readCount", e);
+		}
 	}
 
 	@Override
-	public int contentGoodCount(int boardNum) {
-		return boardMapper.updateGoodCount(boardNum);
+	public boolean contentGoodCount(int boardNum, String memberId) {
+		if (boardMapper.checkGoodCount(memberId, boardNum) != null) {
+			return false;
+		} else {
+			boardMapper.insertGoodCount(memberId, boardNum);
+			boardMapper.updateGoodCount(boardNum);
+			return true;
+		}
 	}
 
 	@Override
 	public List<BoardVO> contentBestReadService(LocalDate searchDate) {
 		List<BoardVO> contents;
-//		try {
+		try {
 			contents = boardMapper.selectWeeklyBestList(getStartDay(searchDate), getLastDay(searchDate));
-//		} catch (Exception e) {
-//			return null;
-//		}
+		} catch (Exception e) {
+			logger.error("not found best contents", e);
+			return null;
+		}
 		return contents;
 	}
 
@@ -74,8 +93,9 @@ public class BoardListServiceImpl implements BoardListService{
 		try {
 			contents = boardMapper.selectContentsList(firstPage, lastPage);
 		} catch (Exception e) {
+			logger.error("not found contents", e);
 			return null;
-		}                                                                             
+		}
 		return contents;
 	}
 
@@ -85,11 +105,11 @@ public class BoardListServiceImpl implements BoardListService{
 		try {
 			contents = boardMapper.selectTitleSearch(title, startPage, endPage);
 		} catch (Exception e) {
-				return null;
+			logger.error("not found search contents", e);
+			return null;
 		}
 		return contents;
 	}
-
 
 	private Timestamp getStartDay(LocalDate searchDate) {
 		LocalDate firstDay = searchDate.with(TemporalAdjusters.previous(DayOfWeek.MONDAY));
@@ -97,7 +117,7 @@ public class BoardListServiceImpl implements BoardListService{
 
 	}
 
-	private Timestamp getLastDay(LocalDate searchDate){
+	private Timestamp getLastDay(LocalDate searchDate) {
 		LocalDate lastDay = searchDate.with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
 		return Timestamp.valueOf(lastDay.atStartOfDay());
 
