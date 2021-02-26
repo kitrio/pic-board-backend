@@ -4,6 +4,8 @@ import com.j.board.domain.BoardVO;
 import com.j.board.security.CustomMember;
 import com.j.board.service.BoardListService;
 import com.j.board.service.FileService;
+import com.j.board.util.ResponseResult;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -25,6 +27,7 @@ public class BoardController {
 
     private final FileService fileService;
     private final BoardListService boardListService;
+    private ResponseResult responseResult;
 
     public BoardController(FileService fileService, BoardListService boardListService) {
         this.fileService = fileService;
@@ -32,62 +35,74 @@ public class BoardController {
     }
 
     @GetMapping("/best")
-    public ResponseEntity<Object> getBestContents(@RequestParam("date") String date) {
+    public ResponseEntity<ResponseResult> getBestContents(@RequestParam("date") String date) {
         LocalDate dateOfWeek = LocalDate.parse(date,DateTimeFormatter.ISO_DATE);
         List<BoardVO> contents = boardListService.contentBestReadService(dateOfWeek);
+
         if(contents == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseResult = new ResponseResult("Service currently unavailable");
+            return new ResponseEntity<>(responseResult ,HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(contents, HttpStatus.OK);
+        responseResult = new ResponseResult(contents);
+        return new ResponseEntity<>(responseResult, HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> searchContents(@RequestParam("keyword") String keyword,
+    public ResponseEntity<ResponseResult> searchContents(@RequestParam("keyword") String keyword,
                                                  @RequestParam("startpage") int startPage, @RequestParam("endpage") int endPage) {
         List<BoardVO> contents = boardListService.contentSearchByTitle(keyword, startPage, endPage);
         if(contents == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else {
-            return new ResponseEntity<>(contents, HttpStatus.OK);
-        }
+            responseResult = new ResponseResult("Service currently unavailable");
+            return new ResponseEntity<>(responseResult, HttpStatus.BAD_REQUEST);
+        } 
+        responseResult = new ResponseResult(contents);
+        return new ResponseEntity<>(responseResult, HttpStatus.OK);
+        
     }
 
     @GetMapping("/contents")
-    public ResponseEntity<Object> getContentsList(@RequestParam("firstpage") int firstPage, @RequestParam("lastpage") int lastPage){
+    public ResponseEntity<ResponseResult> getContentsList(@RequestParam("firstpage") int firstPage, @RequestParam("lastpage") int lastPage){
         List<BoardVO> contents = boardListService.contentListReadService(firstPage, lastPage);
         if(contents == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            responseResult = new ResponseResult("Service currently unavailable");
+            return new ResponseEntity<>(responseResult, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(contents, HttpStatus.OK);
+        responseResult = new ResponseResult(contents);
+        return new ResponseEntity<>(responseResult, HttpStatus.OK);
     }
 
-    @PostMapping("/content/")
-    public ResponseEntity<Object> writeContent(@RequestBody BoardVO contentVO, HttpServletRequest request) {
+    @PostMapping("/content")
+    public ResponseEntity<ResponseResult> writeContent(@RequestBody BoardVO contentVO, HttpServletRequest request) {
         String ip = getIpAddress(request);
         CustomMember member = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         contentVO.setMemberId(member.getUsername());
         contentVO.setNickname(member.getMember().getNickname());
         contentVO.setIp(ip);
         if(boardListService.contentWriteService(contentVO)){
+            responseResult = new ResponseResult("Success");
             return new ResponseEntity<>(HttpStatus.OK);
         }
+        responseResult = new ResponseResult("Service currently unavailable");
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/content/image")
-    public ResponseEntity<Object> uploadImg(@RequestPart("img") final MultipartFile imgfile) {
+    public ResponseEntity<ResponseResult> uploadImg(@RequestPart("img") final MultipartFile imgfile) {
 
         String filePath = fileService.upLoadFile(imgfile);
         if(filePath.equals("invalidfile") || filePath.equals("fail")){
+            responseResult = new ResponseResult("Service currently unavailable");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(filePath, HttpStatus.OK);
+        responseResult = new ResponseResult(filePath);
+        return new ResponseEntity<>(responseResult, HttpStatus.OK);
     }
 
     @GetMapping("/content/{num}")
-    public ResponseEntity<Object> readContent(@PathVariable("num") int num, HttpServletRequest request) {
+    public ResponseEntity<ResponseResult> readContent(@PathVariable("num") int num, HttpServletRequest request) {
         BoardVO content = boardListService.contentReadService(num);
         if (content == null) {
+            responseResult = new ResponseResult("Service currently unavailable");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -120,51 +135,60 @@ public class BoardController {
                     .sameSite("Lax")
                     .build();
         }
-
+        responseResult = new ResponseResult(content);
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                .body(content);
+                .body(responseResult);
     }
 
     @PatchMapping("/content/")
-    public ResponseEntity<Object> modifyContent(@RequestBody BoardVO contentVO) {
-        if(boardListService.contentModifyService(contentVO) == 1){
-            return new ResponseEntity<>(HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ResponseResult> modifyContent(@RequestBody BoardVO contentVO) {
+        if(boardListService.contentModifyService(contentVO)){
+            responseResult = new ResponseResult("Success");
+            return new ResponseEntity<>(responseResult, HttpStatus.OK);
         }
+        responseResult = new ResponseResult("Service currently unavailable");
+        return new ResponseEntity<>(responseResult, HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/content/{num}")
-    public ResponseEntity<Object> deleteContent(@PathVariable("num") int num){
+    public ResponseEntity<ResponseResult> deleteContent(@PathVariable("num") int num){
         CustomMember user = (CustomMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String memberId = user.getUsername();
         if(boardListService.contentDelete(num, memberId)){
-            return new ResponseEntity<>(HttpStatus.OK);
+            responseResult = new ResponseResult("Success");
+            return new ResponseEntity<>(responseResult, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        responseResult = new ResponseResult("Page not found");
+        return new ResponseEntity<>(responseResult, HttpStatus.BAD_REQUEST);
     }
 
     private String getIpAddress(HttpServletRequest request) {
         String remoteAddr = "";
-        if(request != null){
-            remoteAddr = request.getHeader("X-FORWADED-FOR");
-            if (remoteAddr == null || "".equals(remoteAddr)) {
-                remoteAddr = request.getRemoteAddr();
-            }
+
+        if(request == null){
+            return remoteAddr;
+        }
+
+        remoteAddr = request.getHeader("X-FORWARDED-FOR");
+        if(remoteAddr == null){
+            return remoteAddr = request.getRemoteAddr();
         }
         return remoteAddr;
     }
 
     @PutMapping("/content/good/{num}")
-    public ResponseEntity<Object> goodCount(@PathVariable("num") int boardNum, @AuthenticationPrincipal CustomMember principal) {
-        if(principal == null)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-
-        if(boardListService.contentGoodCount(boardNum, principal.getUsername())) {
-            return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<ResponseResult> goodCount(@PathVariable("num") int boardNum, @AuthenticationPrincipal CustomMember principal) {
+        if(principal == null){
+            responseResult = new ResponseResult("Forbidden access");
+            return new ResponseEntity<>(responseResult, HttpStatus.FORBIDDEN);
         }
+        if(boardListService.contentGoodCount(boardNum, principal.getUsername())) {
+            responseResult = new ResponseResult("Success");
+            return new ResponseEntity<>(responseResult, HttpStatus.OK);
+        }
+        responseResult = new ResponseResult("Page not found");
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
